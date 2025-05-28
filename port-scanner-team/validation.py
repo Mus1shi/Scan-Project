@@ -1,5 +1,7 @@
 import ipaddress
 import re
+import validators
+import socket
 
 def validate_ip_address(ip_address):
     try:
@@ -26,4 +28,20 @@ def validate_port_range(port_range):
             return False, f"Invalid port range: {port_range}"
     else:
         return False, f"Invalid port range format: {port_range} . Please use this format (port1-port2) ie: (3-554)"
+
+def validate_url(url):
+    if validators.url(url):
+        try:
+            ip_address = socket.gethostbyname(url)
+            validate_ip_address(ip_address)
+            return True, ip_address
+        except socket.gaierror:
+            print(f"URL does not have a an IP address: {url}")
+            return False
+    else:
+        print(f"URL has a problem: {url}")
+        return False
+
+
+
 
