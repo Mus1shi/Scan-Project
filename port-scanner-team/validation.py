@@ -3,6 +3,13 @@ import re
 import validators
 import socket
 from urllib.parse import urlparse
+import logging
+
+logging.basicConfig(format="{asctime} - {levelname} - {message}",
+                    style="{",
+                    datefmt="%Y-%m-%d %H:%M",
+                    )
+
 
 def validate_ip_address(ip_address):
     try:
@@ -10,6 +17,7 @@ def validate_ip_address(ip_address):
         return True
     except ValueError:
         print(f"That IP address is invalid: {ip_address}")
+        logging.warning(f"That IP address is invalid: {ip_address}")
         return False
 
 def validate_port_range(port_range):
@@ -54,15 +62,22 @@ def validate_url(url):
             ip_address = socket.gethostbyname(hostname)
             if validate_ip_address(ip_address):
                 print(f"Successfully resolved {hostname} to {ip_address}")
+                logging.info(f"Successfully resolved {hostname} to {ip_address}")
                 return True, ip_address
             else:
                 return False, None
         except socket.gaierror:
             print(f"Couldn't resolve hostname: {hostname}")
+            logging.error(f"Couldn't resolve hostname: {hostname}")
+
             return False, None
         except Exception as e:
             print(f"Error resolving hostname: {e}")
+            logging.error(f"Error resolving hostname: {e}")
+
             return False, None
     else:
         print(f"Couldn't extract hostname from: {url}")
+        logging.error(f"Couldn't extract hostname from: {url}")
+
         return False, None
