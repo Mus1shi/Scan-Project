@@ -1,5 +1,5 @@
 import socket
-import  validation
+import validation
 import sys
 
 # ASCII art logo for Duck Slouster
@@ -18,7 +18,7 @@ print("\n* - Patrick                                                    *")
 print("\n* - Steve                                                      *")
 print("\n****************************************************************")
 
- 
+
 def scan_website(website):
     # Function to get IP address from website URL
     # Fonction pour obtenir l'adresse IP à partir de l'URL du site web
@@ -29,7 +29,7 @@ def scan_website(website):
         return ip_address
     else:
         return None
-    
+
 
 def find_port(ip_address):
     # Function to scan a specific port on the given IP address
@@ -47,7 +47,7 @@ def find_port(ip_address):
         else:
             print(f"Error: {result}")
             return
-        open_ports = [] #array to put open ports
+        open_ports = []  # array to put open ports
         for port in range(start, end + 1):
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             socket.setdefaulttimeout(1)
@@ -77,7 +77,7 @@ def main():
     # Fonction principale pour gérer les entrées utilisateur et contrôler le flux du programme
     url_or_ip = input("Do you have a URL or an IP? ").upper()
     ip = None
-    
+
     if url_or_ip == "URL":
         # Handle URL input and convert to IP
         # Gérer l'entrée URL et la convertir en IP
@@ -95,7 +95,7 @@ def main():
             print(f"❌ Invalid IP: {e}")
     else:
         print("❌ Please enter either 'URL' or 'IP'")
-    
+
     # Only scan ports if we have a valid IP
     # Scanner les ports uniquement si nous avons une IP valide
     if ip:
@@ -103,14 +103,10 @@ def main():
     else:
         print("❌ No valid IP to scan. Exiting...")
 
+
 if __name__ == "__main__":
     main()
-    
-    
 
-
-
-    
 
 
 
