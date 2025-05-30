@@ -33,6 +33,7 @@ def validate_port_range(port_range):
         return False, f"Invalid port range format: {port_range} . Please use this format (port1-port2) ie: (3-554)"
 
 def validate_url(url):
+<<<<<<< HEAD
     if url.startswith(('http://', 'https://')):
         if validators.url(url):
             parsed_url = urlparse(url)
@@ -68,3 +69,22 @@ def validate_url(url):
         return False, None
 
 
+=======
+    # Ajouter https:// si absent
+    if not url.startswith(("http://", "https://")):
+        url = "https://" + url
+
+    if validators.url(url):
+        try:
+            # Extraire le hostname (sans protocole ni chemin)
+            hostname = url.split("//")[-1].split("/")[0]
+            ip_address = socket.gethostbyname(hostname)
+            validate_ip_address(ip_address)
+            return True, ip_address
+        except socket.gaierror:
+            print(f"URL does not have a valid IP address: {url}")
+            return False
+    else:
+        print(f"URL has a problem: {url}")
+        return False
+>>>>>>> dd494ac (🔧 Replaced log system with logging module + improved validation)
