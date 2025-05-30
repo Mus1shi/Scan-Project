@@ -1,15 +1,16 @@
-import socket
-import  validation
-import sys
+import socket  # Import socket module for network operations
+import  validation  # Import custom validation module
+import sys  # Import system module for system-specific operations
 
-# ASCII art logo for Duck Slouster
-# Art ASCII pour Duck Slouster
+# ASCII art logo for Duck Slouster - This displays a fancy text-based logo
 print(r"""______            _      _____ _                 _             
 |  _  \          | |    /  ___| |               | |            
 | | | |_   _  ___| | __ \ `--.| | ___  _   _ ___| |_ ___ _ __ 
 | | | | | | |/ __| |/ /  `--. \ |/ _ \| | | / __| __/ _ \ '__|
 | |/ /| |_| | (__|   <  /\__/ / | (_) | |_| \__ \ ||  __/ |   
 |___/  \__,_|\___|_|\_\ \____/|_|\___/ \__,_|___/\__\___|_|   """)
+
+# Display team member information in a formatted box
 print("\n****************************************************************")
 print("\n* Team Members:                                                 *")
 print("\n* - Harold                                                     *")
@@ -20,8 +21,14 @@ print("\n****************************************************************")
 
  
 def scan_website(website):
-    # Function to get IP address from website URL
-    # Fonction pour obtenir l'adresse IP à partir de l'URL du site web
+    """
+    This function takes a website URL and converts it to an IP address
+    Args:
+        website (str): The website URL to scan
+    Returns:
+        str or None: Returns the IP address if valid, None if invalid
+    """
+    # Use validation module to check if URL is valid and get its IP address
     is_valid, ip_address = validation.validate_url(website)
 
     if is_valid:
@@ -32,60 +39,78 @@ def scan_website(website):
     
 
 def find_port(ip_address):
-    # Function to scan a specific port on the given IP address
+    """
+    This function scans ports on a given IP address
+    Args:
+        ip_address (str): The IP address to scan
+    """
     print(f"the scanning is for the IP {ip_address} ")
     print("enter the port you are looking for")
 
     try:
+        # Get port range from user input
         port = input("enter the port you want to scan: ")
+        # Validate the port range using validation module
         is_valid, result = validation.validate_port_range(port)
         start = 0
         end = 0
         if is_valid:
+            # Extract start and end ports from validation result
             start, end = result
             print(f"Start port: {start}, End port: {end}")
         else:
             print(f"Error: {result}")
             return
-        open_ports = [] #array to put open ports
+            
+        open_ports = [] # List to store ports that are found to be open
+        
+        # Loop through each port in the specified range
         for port in range(start, end + 1):
+            # Create a new socket object for TCP connection
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            socket.setdefaulttimeout(1)
+            socket.setdefaulttimeout(1)  # Set timeout to 1 second
 
+            # Try to connect to the port
             result = s.connect_ex((ip_address, port))
-            if result == 0:
+            if result == 0:  # If connection successful (port is open)
                 print("Port {} is open".format(port))
                 open_ports.append(port)
+                # Log open ports to a file
                 with open("open-ports.txt", "w") as log_file:
                     log_file.write(f"Port {port} is open on {ip_address}\n")
-            else:
+            else:  # If connection failed (port is closed)
                 print("Port {} is closed".format(port))
-            s.close()
-    except KeyboardInterrupt:
+            s.close()  # Close the socket connection
+            
+    # Handle various potential errors
+    except KeyboardInterrupt:  # If user interrupts program (Ctrl+C)
         print("\n Exiting Program !!!!")
         sys.exit()
-    except socket.gaierror:
+    except socket.gaierror:  # If hostname resolution fails
         print("\n Hostname Could Not Be Resolved !!!!")
         sys.exit()
-    except socket.error:
+    except socket.error:  # If server doesn't respond
         print("\ Server not responding !!!!")
         sys.exit()
 
 
 def main():
-    # Main function to handle user input and control program flow
-    # Fonction principale pour gérer les entrées utilisateur et contrôler le flux du programme
+    """
+    Main function that controls the program flow:
+    1. Asks user if they have URL or IP
+    2. Validates input
+    3. Initiates port scanning if input is valid
+    """
+    # Ask user whether they have URL or IP
     url_or_ip = input("Do you have a URL or an IP? ").upper()
     ip = None
     
     if url_or_ip == "URL":
-        # Handle URL input and convert to IP
-        # Gérer l'entrée URL et la convertir en IP
+        # If URL provided, get website and convert to IP
         website = input("Enter the website you want to scan: ")
         ip = scan_website(website)
     elif url_or_ip == "IP":
-        # Handle direct IP input
-        # Gérer l'entrée directe de l'IP
+        # If IP provided, validate the IP address
         user_ip = input("Enter the IP you want to scan: ")
         try:
             validation.validate_ip_address(user_ip)
@@ -96,21 +121,12 @@ def main():
     else:
         print("❌ Please enter either 'URL' or 'IP'")
     
-    # Only scan ports if we have a valid IP
-    # Scanner les ports uniquement si nous avons une IP valide
+    # Proceed with port scanning only if we have a valid IP
     if ip:
         find_port(ip)
     else:
         print("❌ No valid IP to scan. Exiting...")
 
+# Program entry point - only run main() if this file is run directly
 if __name__ == "__main__":
     main()
-    
-    
-
-
-
-    
-
-
-
