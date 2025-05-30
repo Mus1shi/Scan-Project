@@ -1,6 +1,8 @@
+import logging
 import socket
 import validation
 import sys
+from datetime import datetime
 
 # ASCII art logo for Duck Slouster
 # Art ASCII pour Duck Slouster
@@ -18,6 +20,12 @@ print("\n* - Patrick                                                    *")
 print("\n* - Steve                                                      *")
 print("\n****************************************************************")
 
+def setup_logging():
+    logging.basicConfig(level=logging.INFO, filename="log.txt", filemode="w",
+                        format="{asctime} - {filename} - {levelname} - {message}",
+                        style="{",
+                        datefmt="%Y-%m-%d %H:%M",
+                        )
 
 def scan_website(website):
     # Function to get IP address from website URL
@@ -26,6 +34,7 @@ def scan_website(website):
 
     if is_valid:
         print(f"The IP address for {website} is: {ip_address}")
+        logging.info(f"The IP address for {website} is: {ip_address}")
         return ip_address
     else:
         return None
@@ -44,8 +53,10 @@ def find_port(ip_address):
         if is_valid:
             start, end = result
             print(f"Start port: {start}, End port: {end}")
+            logging.info(f"Start port: {start}, End port: {end}")
         else:
             print(f"Error: {result}")
+            logging.error(f"Error: {result}")
             return
         open_ports = []  # array to put open ports
         for port in range(start, end + 1):
@@ -57,18 +68,23 @@ def find_port(ip_address):
                 print("Port {} is open".format(port))
                 open_ports.append(port)
                 with open("open-ports.txt", "w") as log_file:
-                    log_file.write(f"Port {port} is open on {ip_address}\n")
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    log_file.write(f"[{timestamp}] Port {port} is open on {ip_address}\n")
             else:
                 print("Port {} is closed".format(port))
+                logging.error(f"Port {port} is closed")
             s.close()
     except KeyboardInterrupt:
         print("\n Exiting Program !!!!")
+        logging.critical("Exiting Program !!!!")
         sys.exit()
     except socket.gaierror:
         print("\n Hostname Could Not Be Resolved !!!!")
+        logging.critical("Hostname Could Not Be Resolved !!!!")
         sys.exit()
     except socket.error:
         print("\ Server not responding !!!!")
+        logging.critical("Server not responding !!!!")
         sys.exit()
 
 
@@ -95,6 +111,7 @@ def main():
             print(f"❌ Invalid IP: {e}")
     else:
         print("❌ Please enter either 'URL' or 'IP'")
+        logging.warning("Please enter either 'URL' or 'IP'")
 
     # Only scan ports if we have a valid IP
     # Scanner les ports uniquement si nous avons une IP valide
@@ -102,9 +119,11 @@ def main():
         find_port(ip)
     else:
         print("❌ No valid IP to scan. Exiting...")
+        logging.error("No valid IP to scan. Exiting...")
 
 
 if __name__ == "__main__":
+    setup_logging()
     main()
 
 

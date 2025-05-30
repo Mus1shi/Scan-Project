@@ -4,12 +4,7 @@ import validators
 import socket
 from urllib.parse import urlparse
 import logging
-
-logging.basicConfig(format="{asctime} - {levelname} - {message}",
-                    style="{",
-                    datefmt="%Y-%m-%d %H:%M",
-                    )
-
+from scan_module import setup_logging
 
 def validate_ip_address(ip_address):
     try:
@@ -20,13 +15,16 @@ def validate_ip_address(ip_address):
         logging.warning(f"That IP address is invalid: {ip_address}")
         return False
 
+
 def validate_port_range(port_range):
     # Single port case validation
     if port_range.isdigit():
         port = int(port_range)
         if 1 <= port <= 65535:
+            logging.info(f"Valid single port: {port}")
             return True, (port, port)
         else:
+            logging.info(f"Invalid single port: {port}")
             return False, f"{port_range} is out of range (1-65535)"
 
     # Port range case validation
@@ -34,11 +32,15 @@ def validate_port_range(port_range):
     if match:
         start, end = int(match.group(1)), int(match.group(2))
         if 1 <= start <= end <= 65535:
+            logging.info(f"Valid range: {start}-{end}")
             return True, (start, end)
         else:
-            return False, f"Invalid port range: {port_range}"
+            logging.info(f"Invalid range: {start}-{end}")
+            return False, f"Invalid range port range: {port_range}"
     else:
+        logging.warning(f"Invalid port range: {port_range}")
         return False, f"Invalid port range format: {port_range} . Please use this format (port1-port2) ie: (3-554)"
+
 
 def validate_url(url):
     if url.startswith(('http://', 'https://')):
@@ -47,6 +49,7 @@ def validate_url(url):
             hostname = parsed_url.hostname
         else:
             print(f"Invalid URL format: {url}")
+            logging.error(f"Invalid URL format: {url}")
             return False, None
     else:
         # If not a full URL, treat as hostname and add http:// for validation purpose
