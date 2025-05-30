@@ -56,7 +56,7 @@ def find_port(ip_address):
             if result == 0:
                 print("Port {} is open".format(port))
                 open_ports.append(port)
-                with open("log.txt", "a") as log_file:
+                with open("open-ports.txt", "w") as log_file:
                     log_file.write(f"Port {port} is open on {ip_address}\n")
             else:
                 print("Port {} is closed".format(port))
