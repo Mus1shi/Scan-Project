@@ -4,7 +4,7 @@ import validators
 import socket
 from urllib.parse import urlparse
 import logging
-from scan_module import setup_logging
+# from scan_module import setup_logging (deja définis dans scan_module & port_scanner)
 
 def validate_ip_address(ip_address):
     try:
