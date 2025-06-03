@@ -2,6 +2,7 @@ import logging
 import socket
 import validation
 import sys
+import os
 from datetime import datetime
 
 # ASCII art logo for Duck Slouster
@@ -20,12 +21,33 @@ print("\n* - Patrick                                                    *")
 print("\n* - Steve                                                      *")
 print("\n****************************************************************")
 
-def setup_logging():
-    logging.basicConfig(level=logging.INFO, filename="log.txt", filemode="w",
-                        format="{asctime} - {filename} - {levelname} - {message}",
-                        style="{",
-                        datefmt="%Y-%m-%d %H:%M",
-                        )
+
+def setup_logging(log_file_path=None):
+    """
+        Centralized logging configuration for Duck Slouster
+        Args:
+            log_file_path: Optional custom path for log file. If None, uses 'log.txt' in current directory
+        """
+    if log_file_path is None:
+        log_file_path = "log.txt"
+
+    # Ensure the directory exists
+    log_dir = os.path.dirname(log_file_path)
+    if log_dir and not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    logging.basicConfig(
+        level=logging.INFO,
+        filename=log_file_path,
+        filemode="w",
+        format="{asctime} - {filename} - {levelname} - {message}",
+        style="{",
+        datefmt="%Y-%m-%d %H:%M",
+    )
+
+    logging.info("Duck Slouster logging initialized")
+    return log_file_path
+
 
 def scan_website(website):
     # Function to get IP address from website URL
@@ -125,7 +147,3 @@ def main():
 if __name__ == "__main__":
     setup_logging()
     main()
-
-
-
-
