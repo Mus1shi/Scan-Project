@@ -17,9 +17,9 @@ A robust and efficient port scanning utility written in Python that allows you t
 
 ```
 port-scanner-team/
-├── scan_module.py    # Core scanning functionality
+├── scan_module.py    # Core scanning functionality with an interactive dialog
 ├── validation.py     # Input validation and error checking
-└── port_scanner.py   # Main program entry point
+└── port_scanner.py   # Scanning functionality with command line
 ```
 
 ## Installation
@@ -43,13 +43,10 @@ python port_scanner.py -h <host> -p <ports>
 Examples:
 ```bash
 # Scan a single port
-python port_scanner.py -h 192.168.1.1 -p 80
+python port_scanner.py --url google.com --ports 80
 
 # Scan a range of ports
-python port_scanner.py -h example.com -p 1-1000
-
-# Scan multiple specific ports
-python port_scanner.py -h 10.0.0.1 -p 22,80,443
+python port_scanner.py --url google.com --ports 80-443
 ```
 
 ## Features Explained

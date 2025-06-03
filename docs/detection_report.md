@@ -35,7 +35,8 @@ Key Functions:
 - validate_url(): Validates and resolves URLs to IP addresses
 
 ### port_scanner.py
-- Empty file, possibly intended for future implementation or reorganization
+- Same goal and use the same function as scan_moudle but uses command line
+- exemple: `python port-scanner-team/port_scanner.py --url hackthissite.org --ports 80-443`
 
 ## Security Features
 1. Input Validation:
